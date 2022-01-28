@@ -93,8 +93,6 @@ function App() {
       try {
         getGamesInfo(e.target.value.split(' ')[0] + " " + e.target.value.split(' ')[1]).then(data => {
 
-
-
           let games = [defaultGame]
 
           if (data.data.length > 0) {
