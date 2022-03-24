@@ -8,7 +8,6 @@ import { isFenValid } from '../../helpers'
 const defaultFen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 
 const defaultGame = {
-
   currentMoveIndex: -1,
   moves: [],
   title: '-- vs --'
@@ -128,7 +127,19 @@ function App() {
 
   return (
 
-    <><div className="app">
+    <>
+      <div className="header">
+        <div className="dropdown">
+          <div className="dropbtn">Dropdown</div>
+          <div className="dropdown-content">
+              <p>Link</p>
+              <p>Link</p>
+              <p>Link</p>
+          </div>
+        </div>
+      </div>
+
+    <div className="app">
       <div className="app__board">
         <Board fen={boardFen} lastMove={game.moves[game.currentMoveIndex]} />
 

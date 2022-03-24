@@ -2,7 +2,6 @@ import con from '../database/db_connection.js'
 
 export default
     {
-
         insert(data) {
             //data.fen = .split(' ')
             let sql = `INSERT INTO lichess_game_fens (
