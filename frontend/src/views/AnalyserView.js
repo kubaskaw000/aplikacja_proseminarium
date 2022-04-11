@@ -22,7 +22,8 @@ const defaultGames = {
 const getGamesInfo = async (fen) => {
   try {
     const response = await fetch(
-      `http://localhost:5000/api/lichess-games?fen=${fen}`
+      `http://localhost:5000/api/lichess-games?fen=${fen}`,
+      { credentials: "include" }
     );
     const data = await response.json();
 

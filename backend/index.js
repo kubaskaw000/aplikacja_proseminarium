@@ -1,42 +1,23 @@
-import fetch from 'node-fetch'
-import games from './models/games.js'
-import { Chess } from 'chess.js'
-import fens from './models/fens.js'
-import express from 'express'
-import cors from 'cors'
+import fetch from "node-fetch";
+import games from "./models/games.js";
+import { Chess } from "chess.js";
+import fens from "./models/fens.js";
+import express from "express";
+import api from "./routes/api.js";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
-import x from './x.js'
+import x from "./x.js";
 
 const port = 5000;
 
-const app = express()
+const app = express();
 
-app.use(cors())
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
-app.get('/api/lichess-games', async (req, res) => {
-    let fen = req.query.fen
+app.use("/api", api);
 
-    fen = fen.split(' ')[0] + " " + fen.split(' ')[1]
-
-    const response = {}
-
-    if (fen) {
-        response.success = true
-        response.data = await games.allFen(fen)
-    }
-    else {
-        response.success = false
-        response.error_message = 'fen parameter is required'
-    }
-
-    res.set('Content-Type', 'application/json')
-
-    res.send(JSON.stringify(response))
-})
-
-
-
-app.listen(port, () => 'Listening on port' + port)
-
-
-
+app.listen(port, () => "Listening on port" + port);

@@ -1,0 +1,42 @@
+
+.app{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container{
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(155, 116, 116);
+    width: 940px;
+    height: 700px;
+
+}
+
+.content{
+    margin-top: 30px;
+}
+
+.loginNav{
+    margin-left: 50px;
+    display: flex;
+
+}
+
+.tab{
+    margin-right: 50px;
+}
+
+.login{
+    margin-right: 16px;
+
+
+}
+
+.register{
+    margin-left: 50px;
+
+}

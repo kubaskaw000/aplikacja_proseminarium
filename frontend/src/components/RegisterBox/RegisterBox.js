@@ -1,30 +1,33 @@
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import "../LoginBox/LoginBox.css";
+import { useNavigate } from "react-router-dom";
+import "../RegisterBox/RegisterBox.css";
 
-function LoginBox() {
+function RegisterBox() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rePassword, setRePassword] = useState("");
 
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
 
-    fetch("http://localhost:5000/api/login", {
+    fetch("http://localhost:5000/api/register", {
       method: "POST",
       credentials: "include",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, rePassword }),
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.status === "success") navigate("/", { replace: true });
+        console.log(data);
+        navigate("/login", { replace: true });
       })
       .catch((err) => console.log(err));
 
     //zapisac token
   };
+
   return (
     <>
       <div id="app">
@@ -49,8 +52,17 @@ function LoginBox() {
               required
             />
           </section>
-          <button onClick={handleLogin} type="submit" value="submit">
-            Sign in
+          <section>
+            <label for="re-password">Re-Password</label>
+            <input
+              onChange={(e) => setRePassword(e.target.value)}
+              name="re-password"
+              autocomplete="re-password"
+              required
+            />
+          </section>
+          <button onClick={handleRegister} type="submit">
+            Sign up
           </button>
         </form>
       </div>
@@ -58,4 +70,4 @@ function LoginBox() {
   );
 }
 
-export default LoginBox;
+export default RegisterBox;
