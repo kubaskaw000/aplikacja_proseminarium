@@ -30,42 +30,39 @@ function RegisterBox() {
 
   return (
     <>
-      <div id="app">
-        <form>
-          <section>
-            <label for="email">Email</label>
-            <input
-              onChange={(e) => setEmail(e.target.value)}
-              name="email"
-              type="email"
-              autocomplete="email"
-              required
-              autofocus
-            />
-          </section>
-          <section>
-            <label for="password">Password</label>
-            <input
-              onChange={(e) => setPassword(e.target.value)}
-              name="password"
-              autocomplete="password"
-              required
-            />
-          </section>
-          <section>
-            <label for="re-password">Re-Password</label>
-            <input
-              onChange={(e) => setRePassword(e.target.value)}
-              name="re-password"
-              autocomplete="re-password"
-              required
-            />
-          </section>
-          <button onClick={handleRegister} type="submit">
-            Sign up
-          </button>
-        </form>
-      </div>
+      <form className="registerForm">
+        <label for="email">Email</label>
+        <input
+          className="input"
+          onChange={(e) => setEmail(e.target.value)}
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+          autofocus
+        />
+
+        <label for="password">Hasło</label>
+        <input
+          className="input"
+          onChange={(e) => setPassword(e.target.value)}
+          name="password"
+          autocomplete="password"
+          required
+        />
+
+        <label for="re-password">Powtórz hasło</label>
+        <input
+          className="input"
+          onChange={(e) => setRePassword(e.target.value)}
+          name="re-password"
+          autocomplete="re-password"
+          required
+        />
+        <button className="submitBtn" onClick={handleRegister} type="submit">
+          Zarejestruj
+        </button>
+      </form>
     </>
   );
 }

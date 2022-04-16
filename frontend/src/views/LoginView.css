@@ -1,19 +1,18 @@
 
 .app{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
 }
 
 .container{
+    border-radius: 10px;
+
     flex-direction: column;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgb(155, 116, 116);
+    background-color: rgb(133, 126, 126);
     width: 940px;
-    height: 700px;
-
+    height: 900px;
 }
 
 .content{
@@ -21,6 +20,8 @@
 }
 
 .loginNav{
+    margin-top: 100px;
+    margin-bottom: 70px;
     margin-left: 50px;
     display: flex;
 
@@ -30,12 +31,18 @@
     margin-right: 50px;
 }
 
-.login{
-    margin-right: 16px;
-
-
+.activeTab{
+    border-bottom: 2px solid #ff503c
 }
 
+.login{
+    margin-right: 16px;
+}
+
+.logo{
+    width: 100px;
+    height: 100px;
+}
 .register{
     margin-left: 50px;
 

@@ -1,5 +1,70 @@
-#app {
+.authBox{
+  display: flex;
+  background-color: rgb(230, 230, 230);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.tabContent{
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.loginForm{
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.input{
   display: flex;
   justify-content: center;
   align-items: center;
+    background: #fff;
+    border: 1px solid #cbcbcb;
+    border-radius: 8px;
+    color: #0d0d0d;
+    font-size: 14px;
+    height: 48px;
+    line-height: 18px;
+    padding: 8px 16px;
+    width: 50%;
+}
+
+
+.submitBtn{
+  appearance: none;
+    background: 0 0;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Poppins,sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 30px;
+    padding: 8px 16px;
+    position: relative;
+    text-align: center;
+    -webkit-transform-style: preserve-3d;
+    transition: all .2s ease;
+    vertical-align: middle;
+    background: #ff503c;
+    border-color: #ff503c;
+    color: #fff;
+    margin: 30px 0;
+    max-width: 50%;
+    width: 420px;
+    margin-bottom: 200px;
+}
+
+.submitBtn:hover{
+  background: #cc4030;
+  border-color: #cc4030;
 }

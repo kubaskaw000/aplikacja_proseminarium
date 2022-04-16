@@ -42,6 +42,7 @@ function authenticate(req, res, next) {
     if (err) return res.sendStatus(403);
 
     req.user = user;
+    console.log(user);
     next();
   });
 }
@@ -105,6 +106,10 @@ router.post("/login", async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+router.get("/user", authenticate, (req, res) => {
+  res.send(req.user);
 });
 
 //rejestracja
