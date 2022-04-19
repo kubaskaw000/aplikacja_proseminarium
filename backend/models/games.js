@@ -1,12 +1,11 @@
-import con from '../database/db_connection.js'
-import moment from 'moment'
+import con from "../database/db_connection.js";
+import moment from "moment";
 
 let now = moment();
 
-export default
-    {
-        insert(data) {
-            let sql = `INSERT INTO lichess_games (
+export default {
+  insert(data) {
+    let sql = `INSERT INTO lichess_games (
             id,
             rated,
             variant,
@@ -44,19 +43,19 @@ export default
             "${data.clock.increment}",
             "${data.clock.totalTime}",
             "${moment(data.created_at).format("YYYY-MM-DD hh:mm:ss")}",
-            "${moment(data.finished_at).format("YYYY-MM-DD hh:mm:ss")}")`
+            "${moment(data.finished_at).format("YYYY-MM-DD hh:mm:ss")}")`;
 
-            con.query(sql, function (err, result) {
-                if (err) throw err;
+    con.query(sql, function (err, result) {
+      if (err) throw err;
 
-                console.log("1 record inserted");
-            });
+      console.log("1 record inserted");
+    });
+  },
 
-        },
-
-        allFen(fen) {
-
-            return new Promise((resolve, reject) => con.query(`
+  allFen(fen) {
+    return new Promise((resolve, reject) =>
+      con.query(
+        `
                 SELECT lichess_games.*, lichess_game_fens.move_id AS fen_move_id
                 FROM lichess_games 
                 JOIN lichess_game_fens 
@@ -65,14 +64,45 @@ export default
                 AND lichess_games.status != 'aborted' 
                 LIMIT 10
             `,
-                fen + "%",
-                (err, results) => {
-                    if (err) reject(err)
+        fen + "%",
+        (err, results) => {
+          if (err) reject(err);
 
-                    resolve(results)
-                }))
+          resolve(results);
         }
+      )
+    );
+  },
 
+  initialMoves() {
+    return new Promise((resolve, reject) =>
+      con.query(
+        `
+            SELECT COUNT(id) as count, move 
+            FROM lichess_game_fens WHERE move_id=0 AND move!=""
+            GROUP BY move 
+            ORDER BY COUNT(id) desc
+            limit 10`,
+        (err, results) => {
+          if (err) reject(err);
 
-    }
+          resolve(results);
+        }
+      )
+    );
+  },
 
+  findByMoves(path) {
+    return new Promise((resolve, reject) =>
+      con.query(
+        `
+        SELECT * FROM lichess_games WHERE moves LIKE '${path}%' limit 10`,
+        (err, results) => {
+          if (err) reject(err);
+
+          resolve(results);
+        }
+      )
+    );
+  },
+};

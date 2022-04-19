@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import apiErrorHandler from "../middlewares/apiErrorHandler.js";
 import validationException from "../exceptions/validationException.js";
 import notFoundException from "../exceptions/notFoundException.js";
+import bcrypt, { hash } from "bcrypt";
 
 dotenv.config();
 
@@ -32,6 +33,34 @@ router.get("/lichess-games", authenticate, async (req, res) => {
   res.send(JSON.stringify(response));
 });
 
+router.get("/tree-initial-moves", async (req, res) => {
+  const response = {};
+
+  response.success = true;
+  response.data = await games.initialMoves();
+
+  res.set("Content-Type", "application/json");
+
+  res.send(JSON.stringify(response));
+
+  console.log(JSON.stringify(response));
+});
+
+router.get("/tree-moves", async (req, res) => {
+  let path = req.query.path;
+
+  const response = {};
+
+  response.success = true;
+  response.data = await games.findByMoves(path);
+
+  res.set("Content-Type", "application/json");
+
+  res.send(JSON.stringify(response));
+
+  console.log(JSON.stringify(response));
+});
+
 //autoryzacja
 function authenticate(req, res, next) {
   const token = req.cookies.token;
@@ -48,28 +77,45 @@ function authenticate(req, res, next) {
 }
 
 // refresh token
-router.post("/refresh", async (req, res) => {
-  const refreshToken = req.body.token;
+router.get("/refresh", async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
 
-  if (!refreshToken) {
-    return res.sendStatus(401);
-  }
-
-  // TODO: Check if refreshToken exists in DB
+  console.log("refresh token:" + refreshToken);
 
   try {
-    await jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const [user] = await qb.select("*").from("users").where({
+      refreshToken,
+    });
+
+    if (!user) {
+      return res.sendStatus(401);
+    }
+
+    console.log(user);
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+    const accessToken = generateAccessToken({ userId: user.id }, "10m");
+    console.log(accessToken);
+
+    res.cookie("token", accessToken, {
+      maxAge: 6000, //10m
+      httpOnly: true,
+    });
+
+    res.send({ accessToken });
   } catch (err) {
-    return res.sendStatus(403);
+    return res.sendStatus(401);
   }
-
-  const accessToken = generateAccessToken({ id: 1 });
-
-  res.send({ accessToken });
 });
 
-function generateAccessToken(payload) {
-  return jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: 86400 }); // 86400
+function generateAccessToken(payload, expireTime) {
+  return jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: expireTime });
+}
+function generateRefreshToken(payload, expireTime) {
+  return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: expireTime,
+  }); // 86400
 }
 
 //logowanie
@@ -77,32 +123,33 @@ router.post("/login", async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  console.log(email, password);
-
   try {
-    let [user] = await qb.select("*").from("users").where({
+    const [user] = await qb.select("*").from("users").where({
       email,
-      password,
     });
 
     if (!user) throw new notFoundException("Brak użytkownika");
 
-    const accessToken = jwt.sign(
-      { userId: user.id },
-      process.env.TOKEN_SECRET,
-      {
-        expiresIn: 60,
-      }
-    );
+    const match = await bcrypt.compare(password, user.password);
 
-    // const refreshToken = jwt.sign(user.id, process.env.REFRESH_TOKEN_SECRET, {
-    //   expiresIn: 525600,
-    // });
+    if (!match) throw new notFoundException("Zle dane logowania");
+
+    const accessToken = generateAccessToken({ userId: user.id }, "10s");
+    const refreshToken = generateRefreshToken({ userId: user.id }, "7d");
+
+    await qb("users").update({ refreshToken }).where({ id: user.id });
+
     res.cookie("token", accessToken, {
-      maxAge: 86400,
+      maxAge: 6000, //10m
       httpOnly: true,
     });
-    res.send({ status: "success", accessToken });
+
+    res.cookie("refreshToken", refreshToken, {
+      maxAge: 25000, //10m
+      httpOnly: true,
+    });
+
+    res.send({ status: "success", accessToken, refreshToken });
   } catch (err) {
     next(err);
   }
@@ -129,11 +176,16 @@ router.post("/register", async (req, res, next) => {
     if (userCount[0].count)
       throw new validationException("Takie konto juz istnieje");
 
-    //Dodanie uzytkownika do bazy
-    await qb("users").insert({
-      id: null,
-      email,
-      password,
+    //Wygenerowanie salt, zaszyfrowanie hasla i dodanie uzytkownika do bazy
+
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(password, salt, async (err, hash) => {
+        await qb("users").insert({
+          id: null,
+          email,
+          password: hash,
+        });
+      });
     });
 
     res.send({ status: "success" });

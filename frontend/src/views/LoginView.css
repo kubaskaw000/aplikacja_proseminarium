@@ -28,6 +28,7 @@
 }
 
 .tab{
+    cursor: pointer;
     margin-right: 50px;
 }
 
