@@ -37,7 +37,7 @@ export default {
             "${data.players.black.user.name}",
             "${data.players.black.user.title}",
             "${data.players.black.rating}",
-            "${data.winner}",
+            "${data.winner ?? "draw"}",
             "${data.moves}",
             "${data.clock.initial}",
             "${data.clock.increment}",
@@ -74,15 +74,17 @@ export default {
     );
   },
 
-  initialMoves() {
+  getNextMoveInfo(moveId, path) {
     return new Promise((resolve, reject) =>
       con.query(
         `
-            SELECT COUNT(id) as count, move 
-            FROM lichess_game_fens WHERE move_id=0 AND move!=""
-            GROUP BY move 
-            ORDER BY COUNT(id) desc
-            limit 10`,
+        SELECT winner,fen, lichess_game_fens.move, COUNT(lichess_game_fens.id) as count
+FROM lichess_game_fens
+INNER JOIN lichess_games 
+ON lichess_games.id = lichess_game_fens.game_id
+WHERE lichess_game_fens.move_id=${moveId} AND lichess_games.moves LIKE "${path}%"
+GROUP BY move, winner 
+ORDER BY count desc;`,
         (err, results) => {
           if (err) reject(err);
 
@@ -92,17 +94,23 @@ export default {
     );
   },
 
-  findByMoves(path) {
-    return new Promise((resolve, reject) =>
-      con.query(
-        `
-        SELECT * FROM lichess_games WHERE moves LIKE '${path}%' limit 10`,
-        (err, results) => {
-          if (err) reject(err);
+  //   getNextMoves(path, moveId) {
+  //     return new Promise((resolve, reject) =>
+  //       con.query(
+  //         `
+  //         SELECT COUNT(lichess_game_fens.game_id) as count, move, fen
+  // FROM lichess_game_fens
+  // INNER JOIN lichess_games
+  // ON lichess_games.id = lichess_game_fens.game_id
+  // WHERE move_id=3 AND moves like "e4 e5%"
+  // GROUP BY move
+  // ORDER BY count desc limit 10;`,
+  //         (err, results) => {
+  //           if (err) reject(err);
 
-          resolve(results);
-        }
-      )
-    );
-  },
+  //           resolve(results);
+  //         }
+  //       )
+  //     );
+  //   },
 };

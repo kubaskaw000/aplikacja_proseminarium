@@ -13,7 +13,7 @@ dotenv.config();
 const router = express.Router();
 
 //zwraca liste partii przyjmując FEN jako parametr
-router.get("/lichess-games", authenticate, async (req, res) => {
+router.get("/lichess-games", async (req, res) => {
   let fen = req.query.fen;
 
   fen = fen.split(" ")[0] + " " + fen.split(" ")[1];
@@ -43,23 +43,68 @@ router.get("/tree-initial-moves", async (req, res) => {
 
   res.send(JSON.stringify(response));
 
-  console.log(JSON.stringify(response));
+  console.log(response);
 });
 
 router.get("/tree-moves", async (req, res) => {
+  let moveId = req.query.moveId;
   let path = req.query.path;
 
+  const groupedMoves = {};
   const response = {};
 
-  response.success = true;
-  response.data = await games.findByMoves(path);
+  const results = await games.getNextMoveInfo(moveId, path);
 
   res.set("Content-Type", "application/json");
 
-  res.send(JSON.stringify(response));
+  //res.send(JSON.stringify(response));
 
-  console.log(JSON.stringify(response));
+  for (let result of results) {
+    const groupedMove = groupedMoves[result.move];
+
+    if (!groupedMove) {
+      const ratio = {
+        white: 0,
+        black: 0,
+        draw: 0,
+      };
+
+      ratio[result.winner] = result.count;
+
+      groupedMoves[result.move] = {
+        move: result.move,
+        ratio,
+        count: result.count,
+        fen: result.fen,
+      };
+
+      continue;
+    }
+    groupedMove.count += result.count;
+    groupedMove.ratio[result.winner] += result.count;
+  }
+
+  res.json({ status: "success", data: Object.values(groupedMoves) });
 });
+
+// {
+// [
+//   {
+//     move:"nf3"
+// black_ratio:50%
+// white_ratio:45%
+// count:sumacount
+// fen: fen
+//   },
+
+//   {
+//     move:"f4"
+// black_ratio:50%
+// white_ratio:45%
+// count:sumacount
+//   }
+// ]
+// }
 
 //autoryzacja
 function authenticate(req, res, next) {

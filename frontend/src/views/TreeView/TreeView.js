@@ -4,10 +4,10 @@ import "./TreeView.css";
 //rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w
 //SELECT * FROM lichess_games WHERE moves LIKE 'e4 e5 bc4%';
 
-const getGamesByPath = async (path) => {
+const getGamesByPath = async (path, moveId) => {
   try {
     const response = await fetch(
-      `http://localhost:5000/api/tree-moves?path=${path}`,
+      `http://localhost:5000/api/tree-moves?path=${path}&moveId=${moveId}`,
       { credentials: "include" }
     );
     const data = await response.json();
@@ -20,7 +20,7 @@ const getGamesByPath = async (path) => {
 
 //SELECT COUNT(id), move FROM lichess_game_fens WHERE move_id=0 AND move!="" GROUP BY move ORDER BY COUNT(id) desc;
 const TreeView = () => {
-  const [data, dataSet] = useState([]);
+  const [data, setData] = useState([]);
   const [path, setPath] = useState([]);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const TreeView = () => {
         );
         response = await response.json();
         if (response.success) {
-          dataSet(response.data);
+          setData(response.data);
         }
       } catch (err) {
         console.log(err);

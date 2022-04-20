@@ -38,9 +38,17 @@ class LichessObserver {
 
     const chess = new Chess();
 
-    for (let [move_id, move] of moves.entries()) {
-      fen = chess.fen();
+    preparedFenData.push({
+      id: data.id,
+      fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w",
+      move: null,
+      move_id: 0,
+    });
 
+    for (let [move_id, move] of moves.entries()) {
+      chess.move(move);
+
+      fen = chess.fen();
       fen = fen.split(" ")[0] + " " + fen.split(" ")[1];
 
       chess.move(move);
@@ -49,12 +57,9 @@ class LichessObserver {
         id: data.id,
         fen: fen,
         move: move,
-        move_id: move_id,
+        move_id: move_id + 1,
       });
     }
-
-    //console.log(preparedFenData)
-
     return preparedFenData;
   }
 
@@ -111,7 +116,7 @@ class LichessObserver {
     });
 
     this.ws.on("message", async (message) => {
-      console.log("%s", message);
+      //console.log("%s", message);
       if (message == "0") {
         setTimeout(() => this.ws.send("null"), this.pingTimeout);
         return;
@@ -121,7 +126,7 @@ class LichessObserver {
 
       if (data.t == "finish") {
         const replaceId = data.d.id;
-        console.log(replaceId);
+        //console.log(replaceId);
         await this.replaceGame(replaceId, this.games).then((newGameId) => {
           this.games.push(newGameId);
           this.ws.send(
@@ -134,7 +139,7 @@ class LichessObserver {
 
         this.games.splice(this.games.indexOf(replaceId), 1);
 
-        console.log(this.gameType, this.games);
+        //console.log(this.gameType, this.games);
 
         await this.saveGameExport(replaceId);
       }
@@ -144,7 +149,7 @@ class LichessObserver {
   async start() {
     await this.initGames();
 
-    console.log(this.games);
+    //console.log(this.games);
 
     this.initWs();
   }
