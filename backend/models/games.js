@@ -60,11 +60,9 @@ export default {
                 FROM lichess_games 
                 JOIN lichess_game_fens 
                 ON lichess_games.id = lichess_game_fens.game_id 
-                WHERE lichess_game_fens.fen LIKE ? 
+                WHERE lichess_game_fens.fen LIKE "${fen}%" 
                 AND lichess_games.status != 'aborted' 
-                LIMIT 10
-            `,
-        fen + "%",
+                LIMIT 10`,
         (err, results) => {
           if (err) reject(err);
 
@@ -78,14 +76,15 @@ export default {
     return new Promise((resolve, reject) =>
       con.query(
         `
-        SELECT winner,fen, lichess_game_fens.move, COUNT(lichess_game_fens.id) as count
+        SELECT winner,fen, lichess_game_fens.move, COUNT(lichess_game_fens.id) as countt
 FROM lichess_game_fens
 INNER JOIN lichess_games 
 ON lichess_games.id = lichess_game_fens.game_id
-WHERE lichess_game_fens.move_id=${moveId} AND lichess_games.moves LIKE "${path}%"
+WHERE lichess_game_fens.move!="" AND lichess_game_fens.move_id=${moveId} AND lichess_games.moves LIKE "${path}%"
 GROUP BY move, winner 
-ORDER BY count desc;`,
+ORDER BY countt desc;`,
         (err, results) => {
+          //console.log(results);
           if (err) reject(err);
 
           resolve(results);

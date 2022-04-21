@@ -43,6 +43,7 @@ function fieldClass(isWhite, isFrom, isTo, isCheck) {
 
 const Board = ({ fen, lastMove }) => {
   const chess = new Chess(fen);
+  //console.log(fen);
 
   const inCheck = chess.in_check();
 
@@ -55,7 +56,7 @@ const Board = ({ fen, lastMove }) => {
 
   piecesInfo = getPiecesInfo(currentPositionOnBoard);
 
-  console.log(currentPositionOnBoard);
+  //console.log(currentPositionOnBoard);
 
   for (let j = coordsY.length - 1; j >= 0; j--) {
     for (let i = 0; i < coordsX.length; i++) {

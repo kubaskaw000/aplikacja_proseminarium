@@ -32,7 +32,8 @@ class LichessObserver {
   }
 
   prepareFensData(data) {
-    let fen;
+    console.log(data);
+
     let moves = data.moves.split(" ");
     let preparedFenData = [];
 
@@ -40,26 +41,23 @@ class LichessObserver {
 
     preparedFenData.push({
       id: data.id,
-      fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w",
+      fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
       move: null,
       move_id: 0,
     });
 
-    for (let [move_id, move] of moves.entries()) {
-      chess.move(move);
-
-      fen = chess.fen();
-      fen = fen.split(" ")[0] + " " + fen.split(" ")[1];
-
-      chess.move(move);
+    for (let i = 1; i <= moves.length; i++) {
+      chess.move(moves[i - 1]);
 
       preparedFenData.push({
         id: data.id,
-        fen: fen,
-        move: move,
-        move_id: move_id + 1,
+        fen: chess.fen(),
+        move: moves[i - 1],
+        move_id: i,
       });
     }
+
+    console.log(preparedFenData);
     return preparedFenData;
   }
 
@@ -72,10 +70,7 @@ class LichessObserver {
 
     const data = await response.json();
 
-    //console.log(data)
-
     let preparedFensData = this.prepareFensData(data);
-    //console.log(preparedFensData);
 
     for (let [index, fen] of preparedFensData.entries()) {
       fens.insert(preparedFensData[index]);

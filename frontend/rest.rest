@@ -17,4 +17,4 @@ GET http://localhost:5000/api/user
 
 ###
 
-GET http://localhost:5000/api/tree-moves?path=e4 e5&moveId=3
+GET http://localhost:5000/api/tree-moves?path=&moveId=1

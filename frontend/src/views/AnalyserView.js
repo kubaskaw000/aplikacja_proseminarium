@@ -64,6 +64,8 @@ function AnalyserView() {
   const [games, setGames] = useState(defaultGames);
   const [game, setGame] = useState(defaultGame);
 
+  console.log(boardFen);
+
   console.log(game);
 
   const updateGameMove = (fen, moveIndex) => {
@@ -80,11 +82,16 @@ function AnalyserView() {
         setBoardFen(defaultFen);
 
         return;
-      } else setBoardFen(e.target.value);
+      } else
+        setBoardFen(
+          //e.target.value.split(" ")[0] + " " + e.target.value.split(" ")[1]
+          e.target.value
+        );
 
       try {
         getGamesInfo(
           e.target.value.split(" ")[0] + " " + e.target.value.split(" ")[1]
+          //e.target.value
         )
           .then((data) => {
             let games = [defaultGame];

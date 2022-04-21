@@ -1,10 +1,11 @@
-import con from '../database/db_connection.js'
+import con from "../database/db_connection.js";
 
-export default
-    {
-        insert(data) {
-            //data.fen = .split(' ')
-            let sql = `INSERT INTO lichess_game_fens (
+export default {
+  insert(data) {
+    //data.fen = .split(' ')
+
+    //console.log("fen do bazy = " + data.fen);
+    let sql = `INSERT INTO lichess_game_fens (
             id,
             fen,
             move_id,
@@ -16,14 +17,12 @@ export default
             "${data.fen}",
             ${data.move_id},
             "${data.id}",
-            "${data.move}")`
+            "${data.move}")`;
 
-            con.query(sql, function (err, result) {
-                if (err) throw err;
+    con.query(sql, function (err, result) {
+      if (err) throw err;
 
-                // console.log("1 record inserted");
-            });
-
-        }
-
-    }
+      // console.log("1 record inserted");
+    });
+  },
+};

@@ -53,7 +53,11 @@ router.get("/tree-moves", async (req, res) => {
   const groupedMoves = {};
   const response = {};
 
+  console.log(moveId, path);
+
   const results = await games.getNextMoveInfo(moveId, path);
+
+  console.log(results);
 
   res.set("Content-Type", "application/json");
 
