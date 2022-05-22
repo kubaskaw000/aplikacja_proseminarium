@@ -8,6 +8,11 @@
     justify-content: center;
     align-items: center;
     max-width: 50px;
+    min-width: 50px;
     background-color: yellow;
     margin-top: 10px;
+}
+
+.branches{
+    display: flex;
 }
