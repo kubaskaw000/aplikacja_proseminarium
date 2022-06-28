@@ -3,8 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { login, logout } from "../authSlice.js";
 
-const protectedRoutes = ["", "tree"];
+//const protectedRoutes = ["/", "/tree"];
 
+const protectedRoutes = [];
 const RouteObserver = () => {
   const isLogged = useSelector((state) => state.auth.value);
   const dispatch = useDispatch();

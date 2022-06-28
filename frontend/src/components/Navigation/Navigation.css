@@ -1,0 +1,15 @@
+nav{
+    display: flex;
+    align-items: center;
+    min-height: 70px;
+    min-width: 100%;
+    background-color: bisque;
+    cursor: auto;
+    position: fixed;
+    z-index: 10;
+}
+
+nav > div{
+    margin-left: 50px;
+    cursor: pointer;
+}

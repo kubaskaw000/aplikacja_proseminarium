@@ -1,9 +1,9 @@
-import LoginBox from "../components/LoginBox/LoginBox";
+import LoginBox from "../../components/LoginBox/LoginBox";
 import { useState } from "react";
-import RegisterBox from "../components/RegisterBox/RegisterBox";
+import RegisterBox from "../../components/RegisterBox/RegisterBox";
 import "./LoginView.css";
 import classNames from "classnames";
-import logo from "../public/img/chess_icon.png";
+import logo from "../../public/img/chess_icon.png";
 
 const tabs = {
   Logowanie: <LoginBox />,

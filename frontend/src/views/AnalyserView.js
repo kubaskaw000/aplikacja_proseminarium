@@ -3,8 +3,8 @@ import "../components/App/App.css";
 import Analyser from "../components/Analyser/Analyser";
 import Chess from "chess.js";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { isFenValid } from ".././helpers";
+import Navigation from "../components/Navigation/Navigation";
 
 const defaultFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -82,16 +82,11 @@ function AnalyserView() {
         setBoardFen(defaultFen);
 
         return;
-      } else
-        setBoardFen(
-          //e.target.value.split(" ")[0] + " " + e.target.value.split(" ")[1]
-          e.target.value
-        );
+      } else setBoardFen(e.target.value);
 
       try {
         getGamesInfo(
           e.target.value.split(" ")[0] + " " + e.target.value.split(" ")[1]
-          //e.target.value
         )
           .then((data) => {
             let games = [defaultGame];
@@ -100,15 +95,7 @@ function AnalyserView() {
               games = stripLichessGames(data.data);
             }
 
-            console.log(games);
-
             setGames({ list: games, index: 0 });
-
-            // for (let i = 0; i < games.length; i++) {
-            //   gameList.push(<option value={i}>{games[i].white_name}</option>)
-            // }
-
-            //console.log(gameList);
           })
           .catch((err) => console.log(err));
       } catch (err) {}
@@ -123,19 +110,7 @@ function AnalyserView() {
 
   return (
     <>
-      <div className="header">
-        <div className="dropdown">
-          <div className="dropbtn">Dropdown</div>
-          <div className="dropdown-content">
-            <p>
-              <Link to="/">Link</Link>
-            </p>
-            <p>Link</p>
-            <p>Link</p>
-          </div>
-        </div>
-      </div>
-
+      <Navigation />
       <div className="app">
         <div className="app__board">
           <Board fen={boardFen} lastMove={game.moves[game.currentMoveIndex]} />

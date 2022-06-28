@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
-import LoginView from "../../views/LoginView";
+import LoginView from "../../views/LoginView/LoginView";
 import AnalyserView from "../../views/AnalyserView";
 import TreeView from "../../views/TreeView/TreeView";
 import { Provider } from "react-redux";

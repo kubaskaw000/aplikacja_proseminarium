@@ -43,7 +43,7 @@ router.get("/tree-initial-moves", async (req, res) => {
 
   res.send(JSON.stringify(response));
 
-  console.log(response);
+  //console.log(response);
 });
 
 router.get("/tree-moves", async (req, res) => {
@@ -53,11 +53,11 @@ router.get("/tree-moves", async (req, res) => {
   const groupedMoves = {};
   const response = {};
 
-  console.log(moveId, path);
+  //console.log(moveId, path);
 
   const results = await games.getNextMoveInfo(moveId, path);
 
-  console.log(results);
+  //console.log(results);
 
   res.set("Content-Type", "application/json");
 
@@ -126,7 +126,7 @@ function authenticate(req, res, next) {
 }
 
 // refresh token
-router.get("/refresh", async (req, res) => {
+router.get("/refresh", authenticate, async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
 
   console.log("refresh token:" + refreshToken);
@@ -183,18 +183,18 @@ router.post("/login", async (req, res, next) => {
 
     if (!match) throw new notFoundException("Zle dane logowania");
 
-    const accessToken = generateAccessToken({ userId: user.id }, "10s");
+    const accessToken = generateAccessToken({ userId: user.id }, "1m");
     const refreshToken = generateRefreshToken({ userId: user.id }, "7d");
 
     await qb("users").update({ refreshToken }).where({ id: user.id });
 
     res.cookie("token", accessToken, {
-      maxAge: 6000, //10m
+      maxAge: 60000, //10m
       httpOnly: true,
     });
 
     res.cookie("refreshToken", refreshToken, {
-      maxAge: 25000, //10m
+      maxAge: 250000, //10m
       httpOnly: true,
     });
 

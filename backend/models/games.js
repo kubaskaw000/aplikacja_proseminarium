@@ -76,13 +76,13 @@ export default {
     return new Promise((resolve, reject) =>
       con.query(
         `
-        SELECT winner,fen, lichess_game_fens.move, COUNT(lichess_game_fens.id) as countt
+        SELECT winner,fen, lichess_game_fens.move, COUNT(lichess_game_fens.id) as count
 FROM lichess_game_fens
 INNER JOIN lichess_games 
 ON lichess_games.id = lichess_game_fens.game_id
 WHERE lichess_game_fens.move!="" AND lichess_game_fens.move_id=${moveId} AND lichess_games.moves LIKE "${path}%"
 GROUP BY move, winner 
-ORDER BY countt desc;`,
+ORDER BY count desc;`,
         (err, results) => {
           //console.log(results);
           if (err) reject(err);
