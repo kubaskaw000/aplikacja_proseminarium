@@ -8,13 +8,26 @@ body{
     height: 100%;
 }
 
-.tree-board > .board{
-    position: absolute;
+
+
+.tree-board{
+    position:absolute;
+    height: 900px;
+    width: 800px;
     transform: scale(0.5);
     right:0;
     top:0;
+
 }
 
+.moveRatio{
+    min-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.3rem;
+    color: rgb(253, 232, 175)
+}
 .moves{
     margin-top:100px;
     margin-left: 50px;
@@ -36,10 +49,7 @@ body{
 .move:hover{
     background-color: rgb(253, 232, 175);
 }
-.board{
-    position:absolute;
-    right: 0;
-}
+
 .tree{
     background-color: brown;
     min-height: 100%;
@@ -53,16 +63,41 @@ body{
     background-color: white;
 }
 
-.app-tree{
-
-    display:flex;
-
-}
 
 .branches{
     display: flex;
 }
 
-.board{
-    margin-top: 60px;
+.board__white{
+    width: 35%;
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    color:black;
+    padding-left: 5%;
+    padding-right: 5%;
+
 }
+
+.board__draw{
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    background-color: grey;
+    color:black;
+    padding-left: 5%;
+    padding-right: 5%;
+    
+}
+
+.board__black{
+    width: 35%;
+    display: flex;
+    justify-content: center;
+    background-color: black;
+    color:white;
+    padding-left: 5%;
+    padding-right: 5%;
+    
+}
+

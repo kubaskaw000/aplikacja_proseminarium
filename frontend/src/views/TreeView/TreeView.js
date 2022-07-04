@@ -11,10 +11,18 @@ const TreeView = () => {
   const [boardFen, setBoardFen] = useState(
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
   );
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
+  const [moveRatio, setMoveRatio] = useState({
+    ratio: {
+      white: 0,
+      draw: 0,
+      black: 0,
+    },
+    count: 0,
+  });
 
-  const { mouseDownHandler, touchStartHandler, wheelHandler, transform } =
-    useViewBox();
+  const { mouseDownHandler, wheelHandler, transform } = useViewBox();
+
+  console.log(moveRatio);
 
   const sumMovesCount = (arr) =>
     arr.reduce((previousValue, el) => previousValue + el.count, 0);
@@ -50,10 +58,13 @@ const TreeView = () => {
 
   //console.log(branches[0]);
 
+  const moveRatioPercentage = (moveRatio, count, fix = 2) => {
+    return ((moveRatio / count) * 100).toFixed(fix);
+  };
+
   return (
     <>
       <Navigation />
-
       <div
         style={transform()}
         onMouseDown={mouseDownHandler}
@@ -69,6 +80,11 @@ const TreeView = () => {
                     key={i}
                     className="move"
                     onClick={(e) => {
+                      setMoveRatio(move);
+
+                      console.log(move.count);
+                      console.log(moveRatio);
+
                       e.currentTarget.classList.toggle("selected");
                       let newPath = [...path, move.move];
 
@@ -99,6 +115,38 @@ const TreeView = () => {
       </div>
       <div className="tree-board">
         <Board fen={boardFen} />
+        <div className="moveRatio">
+          <div
+            style={{
+              width:
+                moveRatioPercentage(moveRatio.ratio.white, moveRatio.count) +
+                "%",
+            }}
+            class="board__white"
+          >
+            {moveRatioPercentage(moveRatio.ratio.white, moveRatio.count)}%
+          </div>
+          <div
+            style={{
+              width:
+                moveRatioPercentage(moveRatio.ratio.draw, moveRatio.count) +
+                "%",
+            }}
+            class="board__draw"
+          >
+            {moveRatioPercentage(moveRatio.ratio.draw, moveRatio.count)}%
+          </div>
+          <div
+            style={{
+              width:
+                moveRatioPercentage(moveRatio.ratio.black, moveRatio.count) +
+                "%",
+            }}
+            class="board__black"
+          >
+            {moveRatioPercentage(moveRatio.ratio.black, moveRatio.count)}%
+          </div>
+        </div>
       </div>
     </>
   );
